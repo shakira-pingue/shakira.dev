@@ -48,3 +48,11 @@ module "frontend" {
   environment     = var.environment
   certificate_arn = module.dns.certificate_arn
 }
+
+module "backend" {
+  source = "../../modules/backend"
+
+  project_name = var.project_name
+  environment  = var.environment
+  domain_name  = var.domain_name
+}
