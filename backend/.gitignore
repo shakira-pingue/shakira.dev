@@ -4,3 +4,5 @@ function.zip
 __pycache__/
 *.pyc
 .env
+scripts/audio/
+scripts/output/
