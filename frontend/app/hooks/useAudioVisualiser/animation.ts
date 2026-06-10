@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { VisualiserMode } from "./useAudioVisualiser";
 
 type AnimateCubeParams = {
   cube: THREE.Mesh;
@@ -20,6 +21,7 @@ type AnimateCubeParams = {
   bandEnergy: number;
   rms: number;
   onset: number;
+  mode: VisualiserMode;
 };
 
 export function animateCube({
@@ -38,10 +40,51 @@ export function animateCube({
   bandEnergy,
   rms,
   onset,
+  mode,
 }: AnimateCubeParams) {
   const uniqueA = Math.sin(index * 12.9898) * 0.5 + 0.5;
   const uniqueB = Math.sin(index * 78.233) * 0.5 + 0.5;
   const uniqueC = Math.cos(index * 37.719) * 0.5 + 0.5;
+
+  if (mode === "header") {
+    const cubesPerBar = 25;
+    const barIndex = Math.floor(index / cubesPerBar);
+    const cubeInBar = index % cubesPerBar;
+
+    const isVisibleBar = cubeInBar === 12;
+
+    if (!isVisibleBar || barIndex > 4) {
+      cube.visible = false;
+      return;
+    }
+
+    cube.visible = true;
+
+    const energy = THREE.MathUtils.clamp(
+      bandEnergy * 0.8 + rms * 0.5 + onset * 0.35,
+      0,
+      1,
+    );
+
+    const baseHeight = 2.4;
+    const reactiveHeight = energy * 3.4;
+    const barHeight = baseHeight + reactiveHeight;
+
+    const barSpacing = 0.42;
+    const x = (barIndex - 2) * barSpacing;
+
+    const y = barHeight / 2 - 1.2;
+
+    cube.position.lerp(new THREE.Vector3(x, y, 0), 0.14);
+
+    cube.scale.lerp(new THREE.Vector3(0.72, barHeight, 0.72), 0.16);
+
+    cube.rotation.set(0, 0, 0);
+
+    return;
+  }
+
+  cube.visible = true;
 
   const mainDirection = new THREE.Vector3(
     xLayer === 0 ? 0 : Math.sign(xLayer),
@@ -157,7 +200,6 @@ export function enforceCubeOrdering({
   const rightCenter = Math.ceil((grid - 1) / 2);
 
   for (let pass = 0; pass < 2; pass++) {
-    // X axis: outer follows inner
     for (let y = 0; y < grid; y++) {
       for (let z = 0; z < grid; z++) {
         for (let x = leftCenter; x > 0; x--) {

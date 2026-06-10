@@ -12,10 +12,12 @@ import {
 import AudioVisualiser from "@/components/sections/AudioVisualiser";
 import HeroVisualiser from "./HeroVisualizer";
 
-export default function Hero() {
+const Hero = () => {
   return (
     <Box position="relative">
-      <HeroVisualiser />
+      <HeroVisualiser isCompact={false} setIsCompact={() => false} />
     </Box>
   );
-}
+};
+
+export default Hero;

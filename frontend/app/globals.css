@@ -1,24 +1,29 @@
 :root {
   --background: #f7f4ee;
   --foreground: #171717;
-}
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --navHeight: 100px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #f7f4ee;
     --foreground: #ededed;
+
+    --navHeight: 100px;
   }
 }
 
+main {
+  /* background-color: var(--background); */
+  /* width: 100%;
+  height: 100%; */
+}
+
 body {
-  background: var(--background);
+  width: 100vw;
+  height: 100vh;
+  /* background: var(--background); */
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }

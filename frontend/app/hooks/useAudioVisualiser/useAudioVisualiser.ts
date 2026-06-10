@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { Track, AnalysisData } from "@/types/tracks";
 import { animateCube, enforceCubeOrdering } from "./animation";
@@ -6,14 +6,29 @@ import { updateCubeColour } from "./colours";
 import { createScene } from "./createScene";
 import { createCubeGrid } from "./createCubeGrid";
 
+export type VisualiserMode = "hero" | "header";
+
+type UseAudioVisualiserOptions = {
+  mode?: VisualiserMode;
+};
+
 const N_BANDS = 6;
 const GRID = 5;
 const SPACING = 0.48;
 
-export function useAudioVisualiser(
+const useAudioVisualiser = (
   mountRef: React.RefObject<HTMLDivElement | null>,
   tracks: Track[],
-) {
+  options: UseAudioVisualiserOptions = {},
+) => {
+  const mode = options.mode ?? "hero";
+
+  const modeRef = useRef<VisualiserMode>("hero");
+  modeRef.current = mode;
+
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const analysisRef = useRef<AnalysisData | null>(null);
 
@@ -29,6 +44,7 @@ export function useAudioVisualiser(
   const beatPulseRef = useRef(0);
   const previousOnsetRef = useRef(0);
   const animFrameRef = useRef<number>(0);
+  // const resizeFrameRef = useRef<number>(0);
 
   const [trackIndex, setTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -37,14 +53,48 @@ export function useAudioVisualiser(
 
   const track = tracks[trackIndex];
 
+  const resizeVisualiser = useCallback(() => {
+    const el = mountRef.current;
+    const renderer = rendererRef.current;
+    const camera = cameraRef.current;
+
+    if (!el || !renderer || !camera) return;
+
+    const width = el.clientWidth;
+    const height = el.clientHeight;
+
+    if (width === 0 || height === 0) return;
+
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(width, height, false);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  }, [mountRef]);
+
   useEffect(() => {
     if (!mountRef.current || tracks.length === 0) return;
 
     const el = mountRef.current;
-    const width = el.offsetWidth;
-    const height = el.offsetHeight;
+
+    const width = el.clientWidth;
+    const height = el.clientHeight;
+
+    if (width === 0 || height === 0) return;
 
     const { scene, camera, renderer, cubeGroup } = createScene(width, height);
+
+    rendererRef.current = renderer;
+    cameraRef.current = camera;
+
+    renderer.setSize(width, height, false);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.domElement.style.width = "100%";
+    renderer.domElement.style.height = "100%";
+
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+
     el.appendChild(renderer.domElement);
 
     const { geometry, cubes, basePositions, offset, velocities } =
@@ -106,6 +156,7 @@ export function useAudioVisualiser(
       beatPulseRef.current *= 0.88;
       previousOnsetRef.current = onset;
 
+      const currentMode = modeRef.current;
       const beatPulse = beatPulseRef.current;
       const center = (GRID - 1) / 2;
 
@@ -203,6 +254,7 @@ export function useAudioVisualiser(
           onset,
           fadeAmount,
           fadeOffset: fadeOffset[i],
+          mode: currentMode,
         });
 
         updateCubeColour(
@@ -219,28 +271,30 @@ export function useAudioVisualiser(
         spacing: SPACING,
       });
 
+      const targetCameraPosition =
+        currentMode === "header"
+          ? new THREE.Vector3(0, 0, 6.5)
+          : new THREE.Vector3(5.8, 6, 6.2);
+
+      camera.position.lerp(targetCameraPosition, 0.06);
+
       camera.lookAt(0, 0, 0);
       renderer.render(scene, camera);
     };
 
     animate();
+    resizeVisualiser();
 
-    const handleResize = () => {
-      const nextWidth = el.offsetWidth;
-      const nextHeight = el.offsetHeight;
-
-      camera.aspect = nextWidth / nextHeight;
-      camera.updateProjectionMatrix();
-
-      renderer.setSize(nextWidth, nextHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const handleWindowResize = () => {
+      resizeVisualiser();
     };
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", handleWindowResize);
 
     return () => {
       cancelAnimationFrame(animFrameRef.current);
-      window.removeEventListener("resize", handleResize);
+      // cancelAnimationFrame(resizeFrameRef.current);
+      window.removeEventListener("resize", handleWindowResize);
 
       geometry.dispose();
 
@@ -251,11 +305,14 @@ export function useAudioVisualiser(
 
       renderer.dispose();
 
+      rendererRef.current = null;
+      cameraRef.current = null;
+
       if (el.contains(renderer.domElement)) {
         el.removeChild(renderer.domElement);
       }
     };
-  }, [tracks, mountRef]);
+  }, [tracks, mountRef, resizeVisualiser]);
 
   useEffect(() => {
     if (!track || tracks.length === 0) return;
@@ -340,4 +397,6 @@ export function useAudioVisualiser(
     prevTrack,
     nextTrack,
   };
-}
+};
+
+export default useAudioVisualiser;
