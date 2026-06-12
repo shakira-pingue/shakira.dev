@@ -32,7 +32,6 @@ requests==2.34.2
 scikit-learn==1.7.2
 scipy==1.15.3
 soundfile==0.14.0
-soxr==1.1.0
 starlette==1.2.1
 threadpoolctl==3.6.0
 typing-inspection==0.4.2
