@@ -3,7 +3,10 @@ name: Deploy Prod
 on:
   push:
     branches:
-      - production
+      - prod
+  pull_request:
+    branches:
+      - prod
 
 jobs:
   deploy-backend:
