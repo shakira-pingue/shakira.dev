@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Superseded visualiser code, kept aside — not part of the active app.
+    "app/_archive/**",
   ]),
 ]);
 
