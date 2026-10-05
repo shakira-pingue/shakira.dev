@@ -1,47 +1,43 @@
 "use client";
 
-import HeroVisualiser from "@/components/Hero/HeroVisualizer";
-import { Box, Button, VStack } from "@chakra-ui/react/";
-import { useState } from "react";
+import { Box, Text } from "@chakra-ui/react/";
+import { ScrambleText } from "@/components/ScrambleText/ScrambleText";
 
 const LandingPage = () => {
-  const [isCompact, setIsCompact] = useState(false);
   return (
-    <Box>
+    <Box >
       <Box
-        as="header"
-        position="fixed"
-        h={isCompact ? "var(--navHeight)" : "100vh"}
-        zIndex={20}
-        w="100vw"
+        position="relative"
+        height="80vh"
+        width="100%"
+        bg="bg"
         overflow="hidden"
-        transition="height 1600ms cubic-bezier(0.16, 1, 0.3, 1)"
+        display="flex"
+        px={6}
+        py={12}
+        whiteSpace="nowrap"
       >
-        <HeroVisualiser isCompact={isCompact} setIsCompact={setIsCompact} />
-
-        {!isCompact && (
-          <VStack
-            position="absolute"
-            inset={0}
-            zIndex={2}
-            justify="center"
-            pointerEvents="none"
-            px={6}
-            textAlign="center"
-          >
-            <Button
-              mt={8}
-              pointerEvents="auto"
-              onClick={() => setIsCompact(true)}
-              borderRadius="full"
-              bg="#31572C"
-              color="#F8FAF6"
-            >
-              Swipe to enter
-            </Button>
-          </VStack>
-        )}
+        <ScrambleText
+          text="Shakira Pingue"
+          fontFamily="heading"
+          fontWeight="600"
+          lineHeight="1.05"
+          letterSpacing="-0.01em"
+          fontSize="clamp(1.75rem, 7vw, 4.5rem)"
+          display="flex"
+          alignSelf="center"
+          width="100%"
+          revealedStyle={{
+            width: "50%",
+            flexWrap: "wrap",
+            textStyle: "jumbo",
+            display: "flex",
+            lineHeight: "0.8",
+            textWrap: "balance",
+          }}
+        />
       </Box>
+      <Box minH="90vh" w="100%" bg="fg"></Box>
     </Box>
   );
 };
