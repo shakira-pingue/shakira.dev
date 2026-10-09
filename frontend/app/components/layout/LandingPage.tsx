@@ -30,6 +30,25 @@ const LandingPage = () => {
           display="flex"
           alignItems="center"
         >
+          <ScrambleText
+            text="Shakira Pingue"
+            fontFamily="heading"
+            fontWeight="600"
+            lineHeight="1.05"
+            letterSpacing="-0.01em"
+            fontSize="clamp(1.75rem, 7vw, 4.5rem)"
+            display="flex"
+            width="100%"
+            setRevealed={setRevealed}
+            revealedStyle={{
+              width: "auto",
+              flexWrap: "wrap",
+              textStyle: "jumbo",
+              display: "flex",
+              lineHeight: "0.8",
+              textWrap: "balance",
+            }}
+          />
         </Box>
         <Box
           gridColumn={revealed ? "2" : "1"}
