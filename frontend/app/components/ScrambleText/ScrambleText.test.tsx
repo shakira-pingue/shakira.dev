@@ -18,7 +18,7 @@ describe("ScrambleText", () => {
   });
 
   it("Renders scrambled placeholder text", () => {
-    renderWithChakra(<ScrambleText text="ab" charset="X" random={() => 0} />);
+    renderWithChakra(<ScrambleText text="ab" charset="X" random={() => 0} setRevealed={vi.fn()} />);
 
     expect(screen.getByText("XX")).toBeInTheDocument();
     expect(screen.queryByText("ab")).not.toBeInTheDocument();
@@ -26,7 +26,7 @@ describe("ScrambleText", () => {
 
   it("Reveals the text once the user scrolls", () => {
     renderWithChakra(
-      <ScrambleText text="ab" charset="X" random={() => 0} decodeStepMs={10} revealDelayMs={0} />
+      <ScrambleText text="ab" charset="X" random={() => 0} decodeStepMs={10} revealDelayMs={0} setRevealed={vi.fn()} />
     );
 
     act(() => {
@@ -40,5 +40,40 @@ describe("ScrambleText", () => {
     });
 
     expect(screen.getByText("ab")).toBeInTheDocument();
+  });
+
+  it("keeps multi-word scrambled text on a single line (no forced break) before it's revealed", () => {
+    const { container } = renderWithChakra(
+      <ScrambleText text="ab cd" charset="X" random={() => 0} setRevealed={vi.fn()} />
+    );
+
+    expect(screen.getByText("XX XX")).toBeInTheDocument();
+    expect(container.querySelector("br")).not.toBeInTheDocument();
+  });
+
+  it("forces multi-word text onto two lines once revealed", () => {
+    const { container } = renderWithChakra(
+      <ScrambleText
+        text="ab cd"
+        charset="X"
+        random={() => 0}
+        decodeStepMs={10}
+        revealDelayMs={0}
+        setRevealed={vi.fn()}
+      />
+    );
+
+    act(() => {
+      window.dispatchEvent(new Event("wheel", { cancelable: true }));
+    });
+    act(() => {
+      vi.advanceTimersByTime(0);
+    });
+    act(() => {
+      vi.advanceTimersByTime(100);
+    });
+
+    expect(container.querySelector("p")).toHaveTextContent("abcd");
+    expect(container.querySelector("br")).toBeInTheDocument();
   });
 });
