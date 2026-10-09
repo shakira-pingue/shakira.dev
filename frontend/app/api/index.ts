@@ -1,4 +1,4 @@
-import { Track } from "@/types/tracks";
+// import { Track } from "@/types/tracks";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -10,4 +10,4 @@ async function apiFetch<T>(path: string): Promise<T> {
   return res.json();
 }
 
-export const getTracks = () => apiFetch<Track[]>("/tracks/");
+// export const getTracks = () => apiFetch<Track[]>("/tracks/");
