@@ -1,26 +1,24 @@
-import { createSystem, defaultConfig, defineConfig, defineTextStyles } from "@chakra-ui/react";
+import { createSystem, defaultConfig, defineConfig, defineRecipe, defineTextStyles } from "@chakra-ui/react";
 
 export const paletteRaw = {
   bg: { light: "#F4F1E8", dark: "#1A1A1A" },
   fg: { light: "#2D3A1F", dark: "#201f1f" },
-  primary: { light: "#2D3A1F", dark: "#F4F1E8" },
+  primary: { light: "#556a37", dark: "#F4F1E8" },
   secondary: { light: "#B8A678", dark: "#22C55E" },
   surface: { light: "#E8E2D0", dark: "#FFD84D" },
 } as const;
 
 const textStyles = defineTextStyles({
   jumbo: {
-    description: "Oversized hero display text",
     value: {
-      fontFamily: "jumbo",
-      fontWeight: "400",
-      fontSize: { base: "6xl", md: "8xl", lg: "jumbo" },
+      // fontFamily: "jumbo",
+      fontWeight: "800",
+      fontSize: { base: "4rem", sm: "8rem", md: "10rem", lg: "12rem" },
       lineHeight: "0.95",
       letterSpacing: "-0.01em",
     },
   },
   jumboBody: {
-    description: "Body copy paired with the jumbo display style",
     value: {
       fontFamily: "jumboBody",
       fontWeight: "400",
@@ -81,12 +79,28 @@ const textStyles = defineTextStyles({
   },
 });
 
+const buttonRecipe = defineRecipe({
+  variants: {
+    shape: {
+      circle: {
+        borderRadius: "full",
+        px: "0",
+        minW: "0",
+        aspectRatio: "1 / 1",
+      },
+    },
+  },
+});
+
 const themeConfig = defineConfig({
   globalCss: {
     "*": {
       transitionProperty: "color, background-color, border-color, fill, stroke",
       transitionDuration: "0.6s",
       transitionTimingFunction: "ease",
+    },
+    html: {
+      color: "primary",
     },
     "@media (prefers-reduced-motion: reduce)": {
       "& *": { transition: "none !important" },
@@ -97,9 +111,6 @@ const themeConfig = defineConfig({
       fonts: {
         jumbo: { value: "var(--font-special-gothic), 'Arial Narrow', sans-serif" },
         jumboBody: { value: "var(--font-inter), sans-serif" },
-      },
-      fontSizes: {
-        jumbo: { value: "10rem" },
       },
     },
     semanticTokens: {
@@ -126,6 +137,9 @@ const themeConfig = defineConfig({
       },
     },
     textStyles,
+    recipes: {
+      button: buttonRecipe,
+    },
   },
 });
 

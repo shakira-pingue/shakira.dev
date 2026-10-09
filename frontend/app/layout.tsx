@@ -14,8 +14,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={fontVariables}>
       <body>
         <Provider>
-          <Box position="fixed" top="5" right="5" zIndex={30}>
-            <ColorModeButton />
+          <Box position="fixed" padding={6} zIndex={30} display="flex" width="100vw">
+            <Box width="100%" display="flex" justifyContent="space-between" alignItems="center">
+              <ColorModeButton />
+            </Box>
           </Box>
           {children}
         </Provider>
