@@ -2,11 +2,11 @@
 
 import { Box, Card, Text } from "@chakra-ui/react/";
 import { ScrambleText } from "@/components/ScrambleText/ScrambleText";
-import { useState } from "react";
+import { useHeroReveal } from "@/context/HeroReveal";
 import { ArrowDown } from "lucide-react";
 
 const LandingPage = () => {
-  const [revealed, setRevealed] = useState(false);
+  const { heroRevealed: revealed, setHeroRevealed: setRevealed } = useHeroReveal();
 
   return (
     <Box width="100%" height="100%">
@@ -75,7 +75,7 @@ const LandingPage = () => {
           <ArrowDown className="bounce" aria-hidden="true" />
         </Box>
       </Box>
-      <Box minH="100vh" w="100vw" bg="fg"></Box>
+      <Box minH="100vh" w="100vw" bg="fg" className="bounce-top"></Box>
     </Box>
   );
 };

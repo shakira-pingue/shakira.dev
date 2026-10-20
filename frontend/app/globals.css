@@ -34,3 +34,35 @@ body {
     animation: scroll-cue-bounce 1.4s ease-in-out infinite;
   }
 }
+
+@keyframes top-edge-bounce {
+  0%,
+  100% {
+    transform: scaleY(1.004);
+  }
+
+  50% {
+    transform: scaleY(0.996);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bounce-top {
+    transform-origin: bottom;
+    animation: top-edge-bounce 1.4s ease-in-out infinite;
+  }
+}
+
+.cursor-dot {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body {
+    cursor: none;
+  }
+
+  .cursor-dot {
+    display: block;
+  }
+}

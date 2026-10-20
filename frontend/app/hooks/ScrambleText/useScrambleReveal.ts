@@ -4,10 +4,10 @@ import { useLatestRef } from "@/hooks/useLatestRef";
 import { useScrollLock } from "./useScrollLock";
 
 const DEFAULT_CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*<>?/[]{}()_+-=";
-const DEFAULT_SCRAMBLE_INTERVAL_MS = 120;
-const DEFAULT_DECODE_STEP_MS = 100;
+const DEFAULT_SCRAMBLE_INTERVAL_MS = 100;
+const DEFAULT_DECODE_STEP_MS = 120;
 const DEFAULT_REVEAL_DELAY_MS = 0;
-const DEFAULT_SCROLL_LOCK_DELAY_MS = 500;
+const DEFAULT_SCROLL_LOCK_DELAY_MS = 800;
 
 export type UseScrambleRevealOptions = {
   charset?: string;
