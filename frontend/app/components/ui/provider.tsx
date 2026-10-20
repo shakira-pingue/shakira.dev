@@ -8,6 +8,9 @@ import { ColorModeProvider } from "@/context/ColorMode";
 export function Provider({ children }: { children: ReactNode }) {
   return (
     <ChakraProvider value={system}>
+      <ColorModeProvider>
+        {children}
+      </ColorModeProvider>
     </ChakraProvider>
   );
 }
