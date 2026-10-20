@@ -2,11 +2,11 @@
 
 import { Box, Card, Text } from "@chakra-ui/react/";
 import { ScrambleText } from "@/components/ScrambleText/ScrambleText";
-import { useState } from "react";
+import { useHeroReveal } from "@/context/HeroReveal";
 import { ArrowDown } from "lucide-react";
 
 const LandingPage = () => {
-  const [revealed, setRevealed] = useState(false);
+  const { heroRevealed: revealed, setHeroRevealed: setRevealed } = useHeroReveal();
 
   return (
     <Box width="100%" height="100%">
@@ -30,6 +30,25 @@ const LandingPage = () => {
           display="flex"
           alignItems="center"
         >
+          <ScrambleText
+            text="Shakira Pingue"
+            fontFamily="heading"
+            fontWeight="600"
+            lineHeight="1.05"
+            letterSpacing="-0.01em"
+            fontSize="clamp(1.75rem, 7vw, 4.5rem)"
+            display="flex"
+            width="100%"
+            setRevealed={setRevealed}
+            revealedStyle={{
+              width: "auto",
+              flexWrap: "wrap",
+              textStyle: "jumbo",
+              display: "flex",
+              lineHeight: "0.8",
+              textWrap: "balance",
+            }}
+          />
         </Box>
         <Box
           gridColumn={revealed ? "2" : "1"}
@@ -56,7 +75,7 @@ const LandingPage = () => {
           <ArrowDown className="bounce" aria-hidden="true" />
         </Box>
       </Box>
-      <Box minH="100vh" w="100vw" bg="fg"></Box>
+      <Box minH="100vh" w="100vw" bg="fg" className="bounce-top"></Box>
     </Box>
   );
 };
