@@ -1,39 +1,8 @@
 "use client";
 
-import { chakra, ClientOnly, Skeleton, type HTMLChakraProps } from "@chakra-ui/react";
-import { ThemeProvider, useTheme, type ThemeProviderProps } from "next-themes";
-import * as React from "react";
+import { Button, ClientOnly, Skeleton, type HTMLChakraProps } from "@chakra-ui/react";
 import { paletteRaw } from "@/theme";
-
-export const ColorMode = {
-  LIGHT: "light",
-  DARK: "dark",
-} as const;
-export type ColorMode = (typeof ColorMode)[keyof typeof ColorMode];
-
-export function ColorModeProvider(props: ThemeProviderProps) {
-  return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme={ColorMode.DARK}
-      enableSystem={false}
-      {...props}
-    />
-  );
-}
-
-export function useColorMode() {
-  const { resolvedTheme, setTheme } = useTheme();
-  const colorMode = (resolvedTheme ?? ColorMode.DARK) as ColorMode;
-  const toggleColorMode = () =>
-    setTheme(colorMode === ColorMode.DARK ? ColorMode.LIGHT : ColorMode.DARK);
-  return { colorMode, setColorMode: setTheme, toggleColorMode };
-}
-
-export function useColorModeValue<T>(light: T, dark: T) {
-  const { colorMode } = useColorMode();
-  return colorMode === ColorMode.DARK ? dark : light;
-}
+import { ColorMode, useColorMode } from "@/context/ColorMode";
 
 type ColorModeButtonProps = HTMLChakraProps<"button">;
 
@@ -47,21 +16,22 @@ export function ColorModeButton(props: ColorModeButtonProps) {
 
 function ColorModeButtonInner(props: ColorModeButtonProps) {
   const { colorMode, toggleColorMode } = useColorMode();
+  const colorModeText = colorMode === ColorMode.DARK ? "Dark" : "Light";
   return (
-    <chakra.button
-      type="button"
-      aria-label={`Switch to ${colorMode === ColorMode.DARK ? ColorMode.LIGHT : ColorMode.DARK} mode`}
+    <Button
+      aria-label={`Switch to ${colorModeText} mode`}
       onClick={toggleColorMode}
       boxSize="4"
       borderRadius="full"
       borderWidth="1px"
-      borderColor="primary"
+      borderColor={colorMode === ColorMode.DARK ? "primary" : "fg"}
       cursor="pointer"
       p="0"
+      shape="circle"
       overflow="hidden"
       transition="transform 0.2s ease"
       _hover={{ transform: "scale(1.08)" }}
-      backgroundImage={`linear-gradient(90deg, ${paletteRaw.bg.dark} 50%, ${paletteRaw.bg.light} 50%)`}
+      backgroundImage={`linear-gradient(90deg, ${paletteRaw.fg[colorMode]} 50%, ${"#FFF"} 50%)`}
       {...props}
     />
   );
