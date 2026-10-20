@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run chakra:typegen && next build",
     "start": "next start",
     "lint": "eslint",
+    "chakra:typegen": "npx --yes @chakra-ui/cli typegen ./app/theme.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
